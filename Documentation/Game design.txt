@@ -1,0 +1,12 @@
+Level select:
+	När spelet startar får spelaren välja bana (Select level using keys 0 - 9.)
+	Det finns 10 banor i spelet. Banorna är från början satt till en hårdkodad standardbana.
+	Banorna läses från filer med samma namn som tangenterna de representerar ex. 7.level är ett giltigt namn.
+	Om en bana inte existerar så skapas en ny standardbana i dess position.
+		
+In game:
+	Piltangenterna används för att styra spelaren.
+
+Level edit:
+	En spelare kan ändra på en bana och behålla sina ändringar mellan spelsessioner.
+	
