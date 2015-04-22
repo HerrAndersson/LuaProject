@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include <iostream>
 #include "lua.hpp"
+#include <SFML/Graphics.hpp>
 
+using namespace sf;
 using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -25,6 +27,24 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	cout << endl;
+
+	RenderWindow window(VideoMode(200, 200), "SFML works!");
+	CircleShape shape(100.f);
+	shape.setFillColor(Color::Green);
+
+	while (window.isOpen())
+	{
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+		}
+
+		window.clear();
+		window.draw(shape);
+		window.display();
+	}
 
 	system("pause");
 }
