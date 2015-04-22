@@ -28,7 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	cout << endl;
 
-	RenderWindow window(VideoMode(200, 200), "SFML works!");
+	RenderWindow window(VideoMode(1200, 800), "SFML works!");
 	CircleShape shape(100.f);
 	shape.setFillColor(Color::Green);
 
