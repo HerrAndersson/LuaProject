@@ -1,68 +1,39 @@
-dimensions = 50
-worldWidth = 24
-worldHeight = 16
+screenWidth = 1200;
+screenHeight = 800;
 player = {}
 player["velX"] = 0
 player["velY"] = 0
 playerSpeed = 3
 
---[[
-world  = {2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2
-		  1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2};
-	 --]]	  
+dimensions = 40
+worldWidth = 30
+worldHeight = 20
 
+levelnum = 0 --if this is 0, make the used choose a level
+gamemodes = { "game", "editor", "won" } --game until player reaches goal, then won. won takes the game back to level select. editor when space is pressed
+gamemode = gamemodes[1]
 
-
---[[
-world{w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,ww12,w13,w14,w15}
-w1  = {2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w2  = {2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w3  = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w4  = {1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w5  = {1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w6  = {1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w7  = {1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w8  = {1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w9  = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w10 = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w11 = {1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w12 = {1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w13 = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1}
-w14 = {1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1}
-w15 = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2}
- --]]
- 
 world = {}
-world[1] = {3, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[2] = {2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[3] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[4] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[5] = {1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[6] = {1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[7] = {1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[8] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[9] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[10] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[11] = {1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[12] = {1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[13] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1}
-world[14] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1}
-world[15] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2}
-world[16] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 4}
-
+world[1] =  {3, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1}
+world[2] =  {2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 2, 1}
+world[3] =  {2, 1, 2, 2, 1, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1}
+world[4] =  {2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 2}
+world[5] =  {2, 2, 2, 2, 1, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 2}
+world[6] =  {1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 1, 2}
+world[7] =  {1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1}
+world[8] =  {2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+world[9] =  {1, 2, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1, 2, 1, 2, 1, 1, 1, 2}
+world[10] = {1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1}
+world[11] = {1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 2, 1}
+world[12] = {2, 2, 2, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 1, 2, 1}
+world[13] = {2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2}
+world[14] = {2, 2, 2, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1}
+world[15] = {1, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1}
+world[16] = {2, 2, 1, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1}
+world[17] = {1, 2, 2, 2, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2}
+world[18] = {1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2}
+world[19] = {2, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2}
+world[20] = {1, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 4}
 
 function keyHandler(code, isKeyDown)
 	local var = code
@@ -92,33 +63,44 @@ function keyHandler(code, isKeyDown)
 			player["velY"] = 0
 		end
 	elseif(var == 11) then
-	local int = "1"
+		local int = "1"
 		loadLevel(int)
+	elseif(var == 57) then
+		if(gamemode == gamemodes[1]) then
+			gamemode = gamemodes[2]
+		elseif(gamemode == gamemodes[2]) then
+			gamemode = gamemodes[1]
+		else
+		end
 	end
 
 	return var
 end
 
-function collision(x, y, type)
-	centerCoordX = math.floor((player["x"] + x + player["radius"]) / 50) + 1
-	centerCoordY = math.floor((player["y"] + y + player["radius"]) / 50) + 1
+function collisionTesting(x, y, type)
+	local centerCoordX = math.floor((player["x"] + x + player["radius"]) / dimensions) + 1
+	local centerCoordY = math.floor((player["y"] + y + player["radius"]) / dimensions) + 1
+	if(world[centerCoordY][centerCoordX] == 4) then
+		-- call "you is winner" function
+	end
 	
-	local leftCoordX = math.floor((player["x"] + x) / 50) + 1
-	local rightCoordX = math.floor(((player["x"] + x) + player["radius"] * 2) / 50) + 1
+	local leftCoordX = math.floor((player["x"] + x) / dimensions) + 1
+	local rightCoordX = math.floor(((player["x"] + x) + player["radius"] * 2) / dimensions) + 1
+	local topCoordY = math.floor((player["y"] + y) / dimensions) + 1
+	local bottomCoordY = math.floor(((player["y"] + y) + player["radius"] * 2) / dimensions) + 1
 	
-	local topCoordY = math.floor((player["y"] + y) / 50) + 1
-	local bottomCoordY = math.floor(((player["y"] + y) + player["radius"] * 2) / 50) + 1
-	
-	if(leftCoordX < 1 or rightCoordX > worldWidth ) then
-		x = 0
-	elseif(topCoordY < 1 or bottomCoordY > worldHeight) then
-		y = 0
-	else
-		if(world[centerCoordY][rightCoordX] == type or world[centerCoordY][leftCoordX] == type) then
+	if(x ~= 0) then
+		if(leftCoordX < 1 or rightCoordX > worldWidth ) then
+			x = 0
+		elseif(world[bottomCoordY][rightCoordX] == type or world[topCoordY][rightCoordX] == type or world[bottomCoordY][leftCoordX] == type or world[topCoordY][leftCoordX] == type) then
 			x = 0
 		end
-		
-		if(world[topCoordY][centerCoordX] == type or world[bottomCoordY][centerCoordX] == type) then
+	end
+	
+	if(y ~= 0) then
+		if(topCoordY < 1 or bottomCoordY > worldHeight) then
+			y = 0
+		elseif(world[bottomCoordY][leftCoordX] == type or world[bottomCoordY][rightCoordX] == type or world[topCoordY][leftCoordX] == type or world[topCoordY][rightCoordX] == type) then
 			y = 0
 		end
 	end
@@ -126,7 +108,7 @@ function collision(x, y, type)
 end
 
 function move(x, y)
-	x,y = collision(x, y, 1)
+	x,y = collisionTesting(x, y, 1)
 	moveC(x, y)
 	return 1
 end
@@ -137,10 +119,6 @@ function update(playerPosX, playerPosY, playerRadius)
 	player["radius"] = playerRadius
 	
 	move(player["velX"], player["velY"])
-	
-	if(world[centerCoordY][centerCoordX] == 4) then
-		-- you is winner
-	end
 end
 
 function render()
@@ -155,10 +133,23 @@ function render()
 		end
 	end
 
-	drawPlayerC()
+	if(gamemode == gamemodes[1]) then
+		drawPlayerC()
+	end
+
+	drawTextC("Hello", (screenWidth/2) - 20, (screenHeight/2) - 20)
 		
 	displayWindowC();
 
 	return 1;
+end
+
+function loadLevel(int)
+	file = io.type(int)
+	print(file)
+	if file == nil then 
+		clearLvl = assert(loadfile("clearLvl.lua"))
+		clearLvl(int)
+	end
 end
 	
