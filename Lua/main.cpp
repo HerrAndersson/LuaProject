@@ -86,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
 	if (error)
 	{
-		std::cerr << "unable to run:" << lua_tostring(L, -1);
+		cerr << "unable to run:" << lua_tostring(L, -1);
 		lua_pop(L, 1);
 
 	}
@@ -111,6 +111,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (window.isOpen())
 	{
+		//Om ändringar görs i scriptet, tex leveledit, så måste scriptet laddas igen för att uppdateras
+		//int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
+		//if (error)
+		//{
+		//	cerr << "unable to run:" << lua_tostring(L, -1);
+		//	lua_pop(L, 1);
+		//}
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -120,21 +128,38 @@ int _tmain(int argc, _TCHAR* argv[])
 				window.close();
 				break;
 
-			case sf::Event::KeyPressed:
+			case Event::KeyPressed:
+				//Send event.key.code to lua for processing
+				if (event.key.code != Keyboard::Space)
+				{
+					lua_getglobal(L, "keyHandler");
+					lua_pushinteger(L, event.key.code);
+					error = lua_pcall(L, 1, 1, 0);
+					if (error)
+					{
+						cerr << "unable to run:" << lua_tostring(L, -1);
+						lua_pop(L, 1);
+					}
+					if (!error)
+					{
+						cout << lua_tonumber(L, -1) << endl;
+						lua_pop(L, 1);
+					}
+				}
+				break;
+
+			case Event::KeyReleased:
+
 				//Send event.key.code to lua for processing
 				lua_getglobal(L, "keyHandler");
 				lua_pushinteger(L, event.key.code);
 				error = lua_pcall(L, 1, 1, 0);
 				if (error)
 				{
-					std::cerr << "unable to run:" << lua_tostring(L, -1);
+					cerr << "unable to run:" << lua_tostring(L, -1);
 					lua_pop(L, 1);
 				}
-				if (!error)
-				{
-					cout << lua_tonumber(L, -1) << endl;
-					lua_pop(L, 1);
-				}					
+
 				break;
 
 			default:
@@ -146,7 +171,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		error = lua_pcall(L, 0, 0, 0);
 		if (error)
 		{
-			std::cerr << "unable to run:" << lua_tostring(L, -1);
+			cerr << "unable to run:" << lua_tostring(L, -1);
 			lua_pop(L, 1);
 		}
 
