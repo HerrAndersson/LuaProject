@@ -6,33 +6,62 @@
 using namespace sf;
 using namespace std;
 
+enum TileTypes
+{
+	PLAYER  = 0,
+	WALL    = 1,
+	PATH    = 2,
+};
+
 CircleShape shape = CircleShape(100.f);
 RenderWindow window(VideoMode(1200, 800), "SFML works!");
 
-int test(lua_State * L)
+int move(lua_State * L)
 {
 	Vector2f pos = shape.getPosition();
-	shape.setPosition(pos.x + lua_tointeger(L, 1), pos.y);
+	shape.setPosition(pos.x + lua_tointeger(L, 1), pos.y + lua_tointeger(L, 2));
+	lua_pop(L, 2);
 	return 0;
 }
 
-void DrawRectangle(float posX, int posY, float width, float height, Color color)
+Color GetColor(int type)
 {
-	RectangleShape shape = RectangleShape(Vector2f(width, height));
-	shape.setPosition(posX, posY);
-	shape.setFillColor(color);
+	if (type == WALL)
+		return Color::Green;
+	else if (type == PATH)
+		return Color(51, 25, 0, 255);
+	else
+		return Color(0, 0, 0, 0);
+}
+
+int DrawSquare(lua_State * L)
+{
+	//Tar emot: float posX, float posY, float width, float height, int type
+
+	float posX = lua_tonumber(L, 1);
+	float posY = lua_tonumber(L, 2);
+	float dimensions = lua_tonumber(L, 3);
+	int type = lua_tointeger(L, 4);
+	lua_pop(L, 4);
+
+	RectangleShape shape = RectangleShape(Vector2f(dimensions, dimensions));
+	shape.setPosition(Vector2f(posX, posY));
+	shape.setFillColor(GetColor(type));
 
 	window.draw(shape);
+	return 0;
 }
 
-void ClearWindow()
+int ClearWindow(lua_State * L)
 {
 	window.clear();
+	return 0;
 }
 
-void DisplayWindow()
+int DisplayWindow(lua_State * L)
 {
 	window.display();
+	return 0;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -49,14 +78,21 @@ int _tmain(int argc, _TCHAR* argv[])
 		lua_pop(L, 1);
 
 	}
-	if (!error)
-	{
-		cout << "Result: " << lua_tonumber(L, -1) << endl;
-		lua_pop(L, 1);
-	}
 
 	cout << endl;
 	shape.setFillColor(Color::Green);
+
+	lua_pushcfunction(L, move);
+	lua_setglobal(L, "moveC");
+
+	lua_pushcfunction(L, ClearWindow);
+	lua_setglobal(L, "clearWindowC");
+
+	lua_pushcfunction(L, DrawSquare);
+	lua_setglobal(L, "drawSquareC");
+
+	lua_pushcfunction(L, DisplayWindow);
+	lua_setglobal(L, "displayWindowC");
 
 	while (window.isOpen())
 	{
@@ -71,9 +107,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			case sf::Event::KeyPressed:
 				//Send event.key.code to lua for processing
-				lua_pushcfunction(L,test);
-				lua_setglobal(L, "testFunc");
-
 				lua_getglobal(L, "keyHandler");
 				lua_pushinteger(L, event.key.code);
 				error = lua_pcall(L, 1, 1, 0);
@@ -92,6 +125,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			default:
 				break;
 			}
+		}
+
+		lua_getglobal(L, "render");
+		error = lua_pcall(L, 0, 0, 0);
+		if (error)
+		{
+			std::cerr << "unable to run:" << lua_tostring(L, -1);
+			lua_pop(L, 1);
 		}
 
 		window.clear();
