@@ -11,33 +11,39 @@ enum TileTypes
 	PLAYER  = 0,
 	WALL    = 1,
 	PATH    = 2,
+	START   = 3,
+	END     = 4,
 };
 
-CircleShape shape = CircleShape(100.f);
+CircleShape player = CircleShape(10.f);
 RenderWindow window(VideoMode(1200, 800), "SFML works!");
 
 int move(lua_State * L)
 {
-	Vector2f pos = shape.getPosition();
-	shape.setPosition(pos.x + lua_tointeger(L, 1), pos.y + lua_tointeger(L, 2));
+	Vector2f pos = player.getPosition();
+	player.setPosition(pos.x + lua_tointeger(L, 1), pos.y + lua_tointeger(L, 2));
 	lua_pop(L, 2);
 	return 0;
 }
 
 Color GetColor(int type)
 {
-	if (type == WALL)
-		return Color::Green;
+	if (type == PLAYER)
+		return Color(0, 102, 204, 255);
+	else if (type == WALL)
+		return Color(0, 51, 15, 255);
 	else if (type == PATH)
-		return Color(51, 25, 0, 255);
+		return Color(71, 45, 0, 255);
+	else if (type == START)
+		return Color(204, 0, 0, 255);
+	else if (type == END)
+		return Color(0, 204, 0, 255);
 	else
 		return Color(0, 0, 0, 0);
 }
 
 int DrawSquare(lua_State * L)
 {
-	//Tar emot: float posX, float posY, float width, float height, int type
-
 	float posX = lua_tonumber(L, 1);
 	float posY = lua_tonumber(L, 2);
 	float dimensions = lua_tonumber(L, 3);
@@ -49,6 +55,12 @@ int DrawSquare(lua_State * L)
 	shape.setFillColor(GetColor(type));
 
 	window.draw(shape);
+	return 0;
+}
+
+int DrawPlayer(lua_State * L)
+{
+	window.draw(player);
 	return 0;
 }
 
@@ -80,7 +92,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	cout << endl;
-	shape.setFillColor(Color::Green);
+	player.setFillColor(GetColor(PLAYER));
 
 	lua_pushcfunction(L, move);
 	lua_setglobal(L, "moveC");
@@ -90,6 +102,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	lua_pushcfunction(L, DrawSquare);
 	lua_setglobal(L, "drawSquareC");
+
+	lua_pushcfunction(L, DrawPlayer);
+	lua_setglobal(L, "drawPlayerC");
 
 	lua_pushcfunction(L, DisplayWindow);
 	lua_setglobal(L, "displayWindowC");
