@@ -72,7 +72,7 @@ function keyHandler(code)
 	elseif(var == 18) then
 		move(0, 5)
 	elseif(var == 11) then
-	local int = "1"
+		local int = "1"
 		loadLevel(int)
 	else 
 		move(0,0)
@@ -103,5 +103,14 @@ function render()
 	displayWindowC();
 
 	return 1;
+end
+
+function loadLevel(int)
+	file = io.type(int)
+	print(file)
+	if file == nil then 
+		clearLvl = assert(loadfile("clearLvl.lua"))
+		clearLvl(int)
+	end
 end
 	
