@@ -101,6 +101,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="clearLvl.lua" />
     <None Include="script.lua" />
     <None Include="script2.lua" />
   </ItemGroup>
