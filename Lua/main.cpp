@@ -86,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
 	if (error)
 	{
-		std::cerr << "unable to run:" << lua_tostring(L, -1);
+		std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 		lua_pop(L, 1);
 
 	}
@@ -111,23 +111,36 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (window.isOpen())
 	{
+		Vector2f pos = player.getPosition ( );
+		lua_getglobal ( L, "update" );
+		lua_pushnumber ( L, pos.x);
+		lua_pushnumber ( L, pos.y );
+		lua_pushnumber ( L, player.getRadius ( ) );
+		error = lua_pcall ( L, 3, 0, 0 );
+		if ( error ) {
+			std::cerr << "unable to run:" << lua_tostring ( L, -1 ) << endl;
+		}
+
 		Event event;
 		while (window.pollEvent(event))
 		{
+			bool keyDown = true;
 			switch (event.type)
 			{
 			case Event::Closed:
 				window.close();
 				break;
-
+			case sf::Event::KeyReleased:
+				keyDown = false;
 			case sf::Event::KeyPressed:
 				//Send event.key.code to lua for processing
 				lua_getglobal(L, "keyHandler");
 				lua_pushinteger(L, event.key.code);
-				error = lua_pcall(L, 1, 1, 0);
+				lua_pushboolean ( L, keyDown );
+				error = lua_pcall(L, 2, 1, 0);
 				if (error)
 				{
-					std::cerr << "unable to run:" << lua_tostring(L, -1);
+					std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 					lua_pop(L, 1);
 				}
 				if (!error)
@@ -146,7 +159,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		error = lua_pcall(L, 0, 0, 0);
 		if (error)
 		{
-			std::cerr << "unable to run:" << lua_tostring(L, -1);
+			std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 			lua_pop(L, 1);
 		}
 

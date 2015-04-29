@@ -1,6 +1,10 @@
 dimensions = 50
 worldWidth = 24
 worldHeight = 16
+player = {}
+player["velX"] = 0
+player["velY"] = 0
+playerSpeed = 3
 
 --[[
 world  = {2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 1
@@ -60,30 +64,83 @@ world[15] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2
 world[16] = {1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 4}
 
 
-function keyHandler(code)
+function keyHandler(code, isKeyDown)
 	local var = code
 
 	if(var == 3) then
-		move(5, 0)
+		if(isKeyDown) then
+			player["velX"] = playerSpeed
+		else
+			player["velX"] = 0
+		end
 	elseif(var == 0) then
-		move(-5, 0) 
+		if(isKeyDown) then
+			player["velX"] = -playerSpeed
+		else
+			player["velX"] = 0
+		end
 	elseif(var == 22) then
-		move(0, -5)
+		if(isKeyDown) then
+			player["velY"] = -playerSpeed
+		else
+			player["velY"] = 0
+		end
 	elseif(var == 18) then
-		move(0, 5)
+		if(isKeyDown) then
+			player["velY"] = playerSpeed
+		else
+			player["velY"] = 0
+		end
 	elseif(var == 11) then
 	local int = "1"
 		loadLevel(int)
-	else 
-		move(0,0)
 	end
 
 	return var
 end
 
+function collision(x, y, type)
+	centerCoordX = math.floor((player["x"] + x + player["radius"]) / 50) + 1
+	centerCoordY = math.floor((player["y"] + y + player["radius"]) / 50) + 1
+	
+	local leftCoordX = math.floor((player["x"] + x) / 50) + 1
+	local rightCoordX = math.floor(((player["x"] + x) + player["radius"] * 2) / 50) + 1
+	
+	local topCoordY = math.floor((player["y"] + y) / 50) + 1
+	local bottomCoordY = math.floor(((player["y"] + y) + player["radius"] * 2) / 50) + 1
+	
+	if(leftCoordX < 1 or rightCoordX > worldWidth ) then
+		x = 0
+	elseif(topCoordY < 1 or bottomCoordY > worldHeight) then
+		y = 0
+	else
+		if(world[centerCoordY][rightCoordX] == type or world[centerCoordY][leftCoordX] == type) then
+			x = 0
+		end
+		
+		if(world[topCoordY][centerCoordX] == type or world[bottomCoordY][centerCoordX] == type) then
+			y = 0
+		end
+	end
+	return x, y
+end
+
 function move(x, y)
+	x,y = collision(x, y, 1)
 	moveC(x, y)
 	return 1
+end
+
+function update(playerPosX, playerPosY, playerRadius)
+	player["x"] = playerPosX
+	player["y"] = playerPosY
+	player["radius"] = playerRadius
+	
+	move(player["velX"], player["velY"])
+	
+	if(world[centerCoordY][centerCoordX] == 4) then
+		-- you is winner
+	end
 end
 
 function render()
@@ -97,7 +154,7 @@ function render()
 			drawSquareC((j-1) * dimensions, (i-1) * dimensions, dimensions, world[i][j]);
 		end
 	end
-	
+
 	drawPlayerC()
 		
 	displayWindowC();
