@@ -16,7 +16,7 @@ enum TileTypes
 };
 
 CircleShape player = CircleShape(10.f);
-RenderWindow window(VideoMode(1200, 800), "SFML works!");
+RenderWindow window(VideoMode(1200, 800), "Luabyrint alltså.. synd att jag inte kom på det först!");
 Text text;
 Font font;
 
