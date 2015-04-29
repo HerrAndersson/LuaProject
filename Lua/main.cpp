@@ -135,9 +135,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			lua_pop(L, 1);
 		}
 
-		window.clear();
-		window.draw(shape);
-		window.display();
+		//window.clear();
+		//window.draw(shape);
+		//window.display();
 	}
 
 	system("pause");
