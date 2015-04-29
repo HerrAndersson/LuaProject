@@ -16,7 +16,9 @@ enum TileTypes
 };
 
 CircleShape player = CircleShape(10.f);
-RenderWindow window(VideoMode(1200, 800), "SFML works!");
+RenderWindow window(VideoMode(1200, 800), "Luabyrint alltså.. synd att jag inte kom på det först!");
+Text text;
+Font font;
 
 int move(lua_State * L)
 {
@@ -64,6 +66,19 @@ int DrawPlayer(lua_State * L)
 	return 0;
 }
 
+int DrawText(lua_State * L)
+{
+	string t = lua_tostring(L, 1);
+	float posX = lua_tonumber(L, 2);
+	float posY = lua_tonumber(L, 3);
+
+	text.setString(t);
+	text.setPosition(posX, posY);
+	window.draw(text);
+	lua_pop(L, 3);
+	return 0;
+}
+
 int ClearWindow(lua_State * L)
 {
 	window.clear();
@@ -86,13 +101,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
 	if (error)
 	{
-		std::cerr << "unable to run:" << lua_tostring(L, -1);
+		cerr << "unable to run:" << lua_tostring(L, -1);
 		lua_pop(L, 1);
 
 	}
 
 	cout << endl;
-	player.setFillColor(GetColor(PLAYER));
 
 	lua_pushcfunction(L, move);
 	lua_setglobal(L, "moveC");
@@ -109,8 +123,30 @@ int _tmain(int argc, _TCHAR* argv[])
 	lua_pushcfunction(L, DisplayWindow);
 	lua_setglobal(L, "displayWindowC");
 
+	lua_pushcfunction(L, DrawText);
+	lua_setglobal(L, "drawTextC");
+
+	if (!font.loadFromFile("font.ttf"))
+	{
+		cout << "Could not load font" << endl;
+	}
+
+	player.setFillColor(GetColor(PLAYER));
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
 	while (window.isOpen())
 	{
+		//Om ändringar görs i scriptet, tex leveledit, så måste scriptet laddas igen för att uppdateras
+		//int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
+		//if (error)
+		//{
+		//	cerr << "unable to run:" << lua_tostring(L, -1);
+		//	lua_pop(L, 1);
+		//}
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -120,21 +156,38 @@ int _tmain(int argc, _TCHAR* argv[])
 				window.close();
 				break;
 
-			case sf::Event::KeyPressed:
+			case Event::KeyPressed:
+				//Send event.key.code to lua for processing
+				if (event.key.code != Keyboard::Space)
+				{
+					lua_getglobal(L, "keyHandler");
+					lua_pushinteger(L, event.key.code);
+					error = lua_pcall(L, 1, 1, 0);
+					if (error)
+					{
+						cerr << "unable to run:" << lua_tostring(L, -1);
+						lua_pop(L, 1);
+					}
+					if (!error)
+					{
+						cout << lua_tonumber(L, -1) << endl;
+						lua_pop(L, 1);
+					}
+				}
+				break;
+
+			case Event::KeyReleased:
+
 				//Send event.key.code to lua for processing
 				lua_getglobal(L, "keyHandler");
 				lua_pushinteger(L, event.key.code);
 				error = lua_pcall(L, 1, 1, 0);
 				if (error)
 				{
-					std::cerr << "unable to run:" << lua_tostring(L, -1);
+					cerr << "unable to run:" << lua_tostring(L, -1);
 					lua_pop(L, 1);
 				}
-				if (!error)
-				{
-					cout << lua_tonumber(L, -1) << endl;
-					lua_pop(L, 1);
-				}					
+
 				break;
 
 			default:
@@ -146,7 +199,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		error = lua_pcall(L, 0, 0, 0);
 		if (error)
 		{
-			std::cerr << "unable to run:" << lua_tostring(L, -1);
+			cerr << "unable to run:" << lua_tostring(L, -1);
 			lua_pop(L, 1);
 		}
 
