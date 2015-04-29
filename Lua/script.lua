@@ -1,8 +1,12 @@
+screenWidth = 1200;
+screenHeight = 800;
+
 dimensions = 40
 worldWidth = 30
 worldHeight = 20
 
-gamemodes = { "game", "editor" }
+levelnum = 0 --if this is 0, make the used choose a level
+gamemodes = { "game", "editor", "won" } --game until player reaches goal, then won. won takes the game back to level select. editor when space is pressed
 gamemode = gamemodes[1]
 
 world = {}
@@ -75,6 +79,8 @@ function render()
 	if(gamemode == gamemodes[1]) then
 		drawPlayerC()
 	end
+
+	drawTextC("Hello", (screenWidth/2) - 20, (screenHeight/2) - 20)
 		
 	displayWindowC();
 

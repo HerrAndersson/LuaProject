@@ -17,6 +17,8 @@ enum TileTypes
 
 CircleShape player = CircleShape(10.f);
 RenderWindow window(VideoMode(1200, 800), "SFML works!");
+Text text;
+Font font;
 
 int move(lua_State * L)
 {
@@ -64,6 +66,19 @@ int DrawPlayer(lua_State * L)
 	return 0;
 }
 
+int DrawText(lua_State * L)
+{
+	string t = lua_tostring(L, 1);
+	float posX = lua_tonumber(L, 2);
+	float posY = lua_tonumber(L, 3);
+
+	text.setString(t);
+	text.setPosition(posX, posY);
+	window.draw(text);
+	lua_pop(L, 3);
+	return 0;
+}
+
 int ClearWindow(lua_State * L)
 {
 	window.clear();
@@ -92,7 +107,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	cout << endl;
-	player.setFillColor(GetColor(PLAYER));
 
 	lua_pushcfunction(L, move);
 	lua_setglobal(L, "moveC");
@@ -108,6 +122,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	lua_pushcfunction(L, DisplayWindow);
 	lua_setglobal(L, "displayWindowC");
+
+	lua_pushcfunction(L, DrawText);
+	lua_setglobal(L, "drawTextC");
+
+	if (!font.loadFromFile("font.ttf"))
+	{
+		cout << "Could not load font" << endl;
+	}
+
+	player.setFillColor(GetColor(PLAYER));
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 	while (window.isOpen())
 	{
