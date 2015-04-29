@@ -6,13 +6,33 @@
 using namespace sf;
 using namespace std;
 
-CircleShape shape(100.f);
+CircleShape shape = CircleShape(100.f);
+RenderWindow window(VideoMode(1200, 800), "SFML works!");
 
 int test(lua_State * L)
 {
 	Vector2f pos = shape.getPosition();
 	shape.setPosition(pos.x + lua_tointeger(L, 1), pos.y);
 	return 0;
+}
+
+void DrawRectangle(float posX, int posY, float width, float height, Color color)
+{
+	RectangleShape shape = RectangleShape(Vector2f(width, height));
+	shape.setPosition(posX, posY);
+	shape.setFillColor(color);
+
+	window.draw(shape);
+}
+
+void ClearWindow()
+{
+	window.clear();
+}
+
+void DisplayWindow()
+{
+	window.display();
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -36,9 +56,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	cout << endl;
-
-	RenderWindow window(VideoMode(1200, 800), "SFML works!");
-	
 	shape.setFillColor(Color::Green);
 
 	while (window.isOpen())
