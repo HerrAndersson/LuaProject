@@ -105,12 +105,17 @@ function render()
 	return 1;
 end
 
+function fileExists(int)
+   local f=io.open(int,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+
 function loadLevel(int)
-	file = io.type(int)
-	print(file)
-	if file == nil then 
+	file = fileExists(int)
+	if file == false then 
 		clearLvl = assert(loadfile("clearLvl.lua"))
 		clearLvl(int)
 	end
+	file = io.open(int,"r")
+	file:read	 
 end
-	
