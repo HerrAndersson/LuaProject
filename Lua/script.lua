@@ -7,6 +7,8 @@ playerSpeed = 3
 lockRender = false;
 lockKeys = false;
 currentLevel = 1;
+startCoord = {}
+endCoord = {}
 worldPos={}
 worldPos["x"] = 1
 worldPos["y"] = 1
@@ -71,11 +73,26 @@ function keyHandler(code, isKeyDown)
 				if(worldPos["y"] < worldHeight) then
 					worldPos["y"] = worldPos["y"] + 1
 				end
-			elseif(var >26 and var < 31) then
-				world[worldPos["y"]][worldPos["x"]]= var -26
+			elseif(var > 26 and var < 31) then
+				if(worldPos["y"] ~= startCoord["y"] or worldPos["x"] ~= startCoord["x"]) then
+					if(worldPos["y"] ~= endCoord["y"] or worldPos["x"] ~= endCoord["x"]) then
+						local tileType = var - 26
+						if(tileType == 3) then
+							world[startCoord["y"]][startCoord["x"]] = 2
+							startCoord["x"] = worldPos["x"]
+							startCoord["y"] = worldPos["y"]
+						elseif(tileType == 4) then
+							world[endCoord["y"]][endCoord["x"]] = 2
+							endCoord["x"] = worldPos["x"]
+							endCoord["y"] = worldPos["y"]
+						end
+						world[worldPos["y"]][worldPos["x"]] = tileType
+					end
+				end
 			elseif(var == 60) then	
 				gamemode = gamemodes[1]
 				saveLevel(levelnum)
+				place((startCoord["x"] - 1) * dimensions + playerOffset, (startCoord["y"] - 1) * dimensions + playerOffset)
 			end
 		end 
 	end
@@ -182,13 +199,15 @@ function loadLevel(int)
 	for y = 1, worldHeight, 1 do
 		for x = 1, worldWidth, 1 do
 			if(world[y][x] == 3) then
-				local playerOffset = dimensions / 2 - player["radius"]
+				playerOffset = dimensions / 2 - player["radius"]
 				place((x - 1) * dimensions + playerOffset, (y - 1) * dimensions + playerOffset)
-				local b = 1
-				break
+				startCoord["x"] = x
+				startCoord["y"] = y
+			elseif(world[y][x] == 4) then
+				endCoord["x"] = x
+				endCoord["y"] = y
 			end
 		end
-		if (b == 1) then break end
 	end
 	
 	levelnum = int;
@@ -197,6 +216,7 @@ end
 
 function init(playerRadius)
 	player["radius"] = playerRadius
+	playerOffset = dimensions / 2 - player["radius"]
 	loadLevel(1)
 end
 
@@ -208,8 +228,6 @@ function saveLevel(lnum)
 	for i = 1, worldHeight, 1 do
 		file:write("\n" .. "world[" .. i .. "]" .. " = " .. table.tostring(world[i]))
 	end
-
-
 	file:close()
 end
 
