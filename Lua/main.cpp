@@ -16,7 +16,7 @@ enum TileTypes
 };
 
 CircleShape player = CircleShape(10.f);
-RenderWindow window(VideoMode(1200, 800), "Luabyrint alltså.. synd att jag inte kom på det först!");
+RenderWindow window(VideoMode(1200, 800), "luaproj");
 Text text;
 Font font;
 
@@ -117,21 +117,20 @@ int sleepFunc(lua_State * L)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	cout << endl;
+	///////////////////////////////////////////////////// Load lua ///////////////////////////////////////////////////
 	lua_State* L = luaL_newstate();
 	luaL_openlibs(L);
-	//int error = luaL_loadstring(L, "print('Hello World!')") || lua_pcall(L, 0, 0, 0);
 
 	int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
 	if (error)
 	{
 		std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 		lua_pop(L, 1);
-
 	}
 
 	cout << endl;
 
+	////////////////////////////////////////////////// Push functions ////////////////////////////////////////////////
 	lua_pushcfunction(L, sleepFunc);
 	lua_setglobal(L, "sleepFuncC");
 
@@ -156,10 +155,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	lua_pushcfunction(L, DrawText);
 	lua_setglobal(L, "drawTextC");
 
+
+	/////////////////////////////////////////////////////// Init /////////////////////////////////////////////////////
 	if (!font.loadFromFile("font.ttf"))
-	{
 		cout << "Could not load font" << endl;
-	}
 
 	player.setFillColor(GetColor(PLAYER));
 	text.setFont(font);
@@ -170,20 +169,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	lua_getglobal(L, "init");
 	lua_pushnumber(L, player.getRadius());
 	error = lua_pcall(L, 1, 0, 0);
-	if (error) {
+	if (error) 
+	{
 		std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 	}
 
 	while (window.isOpen())
 	{
-		//Om ändringar görs i scriptet, tex leveledit, så måste scriptet laddas igen för att uppdateras
-		//int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
-		//if (error)
-		//{
-		//	cerr << "unable to run:" << lua_tostring(L, -1);
-		//	lua_pop(L, 1);
-		//}
-
+		////////////////////////////////////////////////// Update ////////////////////////////////////////////////////
 		Vector2f pos = player.getPosition ( );
 		lua_getglobal ( L, "update" );
 		lua_pushnumber ( L, pos.x);
@@ -193,6 +186,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cerr << "unable to run:" << lua_tostring ( L, -1 ) << endl;
 		}
 
+		//////////////////////////////////////////////// KeyHandler //////////////////////////////////////////////////
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -212,10 +206,6 @@ int _tmain(int argc, _TCHAR* argv[])
 					{
 						window.close();
 					}
-					//else
-					//{
-					//	lua_
-					//}
 				}
 				if (event.key.code == Keyboard::Tab)
 				{
@@ -228,7 +218,7 @@ int _tmain(int argc, _TCHAR* argv[])
 						std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 						lua_pop(L, 1);
 					}
-					if (!error)
+					else
 					{
 						cout << lua_tonumber(L, -1) << endl;
 						lua_pop(L, 1);
@@ -236,7 +226,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 			case sf::Event::KeyPressed:
 				//Send event.key.code to lua for processing
-				
 				if (event.key.code != Keyboard::Tab && event.key.code !=Keyboard::Escape)
 				{
 					lua_getglobal(L, "keyHandler");
@@ -260,6 +249,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 		}
 
+		////////////////////////////////////////////////// Render ////////////////////////////////////////////////////
 		lua_getglobal(L, "render");
 		error = lua_pcall(L, 0, 0, 0);
 		if (error)
@@ -267,10 +257,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 			lua_pop(L, 1);
 		}
-
-		//window.clear();
-		//window.draw(shape);
-		//window.display();
 	}
 
 	system("pause");
