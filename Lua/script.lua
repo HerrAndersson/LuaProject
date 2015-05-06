@@ -155,6 +155,8 @@ function render()
 
 		if(gamemode == gamemodes[1]) then
 			drawPlayerC()
+		elseif(gamemode == gamemodes[2]) then
+			drawSquareC(worldPos["y"] * dimensions +15, worldPos["x"] * dimensions +15, 10,0);
 		end			
 		displayWindowC();
 	end
