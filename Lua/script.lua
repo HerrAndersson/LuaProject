@@ -7,7 +7,9 @@ playerSpeed = 3
 lockRender = false;
 lockKeys = false;
 currentLevel = 1;
-
+worldPos={}
+worldPos["x"] = 0
+worldPos["y"] = 0
 dimensions = 40
 worldWidth = 30
 worldHeight = 20
@@ -21,42 +23,60 @@ world = {}
 function keyHandler(code, isKeyDown)
 	local var = code
 	if(lockKeys == false) then
+		if(gamemode==gamemodes[1]) then
 			if(var == 3) then
-			if(isKeyDown) then
-				player["velX"] = playerSpeed
-			else
-				player["velX"] = 0
-			end
-		elseif(var == 0) then
-			if(isKeyDown) then
-				player["velX"] = -playerSpeed
-			else
-				player["velX"] = 0
-			end
-		elseif(var == 22) then
-			if(isKeyDown) then
-				player["velY"] = -playerSpeed
-			else
-				player["velY"] = 0
-			end
-		elseif(var == 18) then
-			if(isKeyDown) then
-				player["velY"] = playerSpeed
-			else
-				player["velY"] = 0
-			end
-		elseif(var == 57) then
-			if(gamemode == gamemodes[1]) then
+				if(isKeyDown) then
+					player["velX"] = playerSpeed
+				else
+					player["velX"] = 0
+				end
+			elseif(var == 0) then
+				if(isKeyDown) then
+					player["velX"] = -playerSpeed
+				else
+					player["velX"] = 0
+				end
+			elseif(var == 22) then	
+				if(isKeyDown) then
+					player["velY"] = -playerSpeed
+				else
+					player["velY"] = 0
+				end
+			elseif(var == 18) then
+				if(isKeyDown) then
+					player["velY"] = playerSpeed
+				else
+					player["velY"] = 0
+				end
+			elseif(var == 60) then	
 				gamemode = gamemodes[2]
-			elseif(gamemode == gamemodes[2]) then
-				gamemode = gamemodes[1]
-			else
+			elseif(var > 25 and var < 36) then
+				currentLevel = tostring(var - 26)
+				loadLevel(currentLevel)
 			end
-		elseif(var > 25 and var < 36) then
-			currentLevel = tostring(var - 26)
-			loadLevel(currentLevel)
-		end
-
+		elseif(gamemode==gamemodes[2]) then			
+			if(var == 3) then
+				if(worldPos["x"] < worldWidth) then
+					worldPos["x"] = worldPos["x"] + 1
+			end
+			elseif(var == 0) then
+				if(worldPos["x"] >0) then
+					worldPos["x"] = worldPos["x"] - 1
+				end
+			elseif(var == 22) then	
+				if(worldPos["y"] >0) then
+					worldPos["y"] = worldPos["y"] - 1
+				end
+			elseif(var == 18) then
+				if(worldPos["y"] < worldHeight) then
+					worldPos["y"] = worldPos["y"] + 1
+				end
+			elseif(var >26 and var < 31) then
+				world[worldPos["x"]][worldPos["y"]]= var -26
+			elseif(var == 60) then	
+				gamemode = gamemodes[1]
+			end
+		end 
 	end
 	return var
 end
@@ -93,7 +113,7 @@ end
 
 function gameWon()
 	lockKeys = true;
-	drawTextC("YOU WON!", (screenWidth/2) - 20, (screenHeight/2) - 20)
+	drawTextC("YOU WON!", (screenWidth/2), (screenHeight/2))
 	displayWindowC();
 	sleepFuncC(2)
 	loadLevel(currentLevel)
