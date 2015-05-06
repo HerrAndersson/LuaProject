@@ -124,7 +124,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
 	if (error)
 	{
-		std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
+		cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 		lua_pop(L, 1);
 	}
 
@@ -170,9 +170,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	lua_pushnumber(L, player.getRadius());
 	error = lua_pcall(L, 1, 0, 0);
 	if (error)
-	{
-		std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
-	}
+		cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 
 	while (window.isOpen())
 	{
@@ -184,7 +182,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		error = lua_pcall(L, 2, 0, 0);
 		if (error) {
 			std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
-		}
 
 		//////////////////////////////////////////////// KeyHandler //////////////////////////////////////////////////
 		Event event;
@@ -209,7 +206,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					error = lua_pcall(L, 2, 1, 0);
 					if (error)
 					{
-						std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
+						cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 						lua_pop(L, 1);
 					}
 					else
@@ -253,7 +250,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		error = lua_pcall(L, 0, 0, 0);
 		if (error)
 		{
-			std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
+			cerr << "unable to run:" << lua_tostring(L, -1) << endl;
 			lua_pop(L, 1);
 		}
 	}
