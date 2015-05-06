@@ -28,6 +28,13 @@ int move(lua_State * L)
 	return 0;
 }
 
+int place(lua_State * L)
+{
+	player.setPosition(lua_tointeger(L, 1), lua_tointeger(L, 2));
+	lua_pop(L, 2);
+	return 0;
+}
+
 Color GetColor(int type)
 {
 	if (type == PLAYER)
@@ -73,7 +80,17 @@ int DrawText(lua_State * L)
 	float posY = lua_tonumber(L, 3);
 
 	text.setString(t);
-	text.setPosition(posX, posY);
+	float width = text.getLocalBounds().width;
+	float height = text.getLocalBounds().height;
+	text.setPosition(posX - width / 2, posY - height / 2);
+	
+	float padding = 30;
+
+	RectangleShape shape = RectangleShape(Vector2f(width + padding * 2, height + padding));
+	shape.setPosition(Vector2f(posX - padding - width / 2, posY - height / 2));
+	shape.setFillColor(GetColor(0));
+
+	window.draw(shape);
 	window.draw(text);
 	lua_pop(L, 3);
 	return 0;
@@ -88,6 +105,13 @@ int ClearWindow(lua_State * L)
 int DisplayWindow(lua_State * L)
 {
 	window.display();
+	return 0;
+}
+
+int sleepFunc(lua_State * L)
+{
+	sf::sleep(sf::seconds(lua_tonumber(L, 1)));
+	lua_pop(L, 1);
 	return 0;
 }
 
@@ -108,8 +132,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	cout << endl;
 
+	lua_pushcfunction(L, sleepFunc);
+	lua_setglobal(L, "sleepFuncC");
+
 	lua_pushcfunction(L, move);
 	lua_setglobal(L, "moveC");
+
+	lua_pushcfunction(L, place);
+	lua_setglobal(L, "placeC");
 
 	lua_pushcfunction(L, ClearWindow);
 	lua_setglobal(L, "clearWindowC");
@@ -133,9 +163,16 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	player.setFillColor(GetColor(PLAYER));
 	text.setFont(font);
-	text.setCharacterSize(24);
+	text.setCharacterSize(60);
 	text.setColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+	lua_getglobal(L, "init");
+	lua_pushnumber(L, player.getRadius());
+	error = lua_pcall(L, 1, 0, 0);
+	if (error) {
+		std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
+	}
 
 	while (window.isOpen())
 	{
@@ -151,8 +188,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		lua_getglobal ( L, "update" );
 		lua_pushnumber ( L, pos.x);
 		lua_pushnumber ( L, pos.y );
-		lua_pushnumber ( L, player.getRadius ( ) );
-		error = lua_pcall ( L, 3, 0, 0 );
+		error = lua_pcall ( L, 2, 0, 0 );
 		if ( error ) {
 			std::cerr << "unable to run:" << lua_tostring ( L, -1 ) << endl;
 		}
@@ -170,7 +206,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				keyDown = false;
 			case sf::Event::KeyPressed:
 				//Send event.key.code to lua for processing
-				if (event.key.code != Keyboard::Space)
+				if (event.key.code == Keyboard::Escape){
+					window.close();
+				}
+				else if (event.key.code != Keyboard::Space)
 				{
 					lua_getglobal(L, "keyHandler");
 					lua_pushinteger(L, event.key.code);
