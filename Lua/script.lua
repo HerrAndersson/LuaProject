@@ -24,25 +24,25 @@ function keyHandler(code, isKeyDown)
 	local var = code
 	if(lockKeys == false) then
 		if(gamemode==gamemodes[1]) then
-			if(var == 3) then
+			if(var == 3 or var == 72) then
 				if(isKeyDown) then
 					player["velX"] = playerSpeed
 				else
 					player["velX"] = 0
 				end
-			elseif(var == 0) then
+			elseif(var == 0 or var == 71) then
 				if(isKeyDown) then
 					player["velX"] = -playerSpeed
 				else
 					player["velX"] = 0
 				end
-			elseif(var == 22) then	
+			elseif(var == 22 or var == 73) then	
 				if(isKeyDown) then
 					player["velY"] = -playerSpeed
 				else
 					player["velY"] = 0
 				end
-			elseif(var == 18) then
+			elseif(var == 18 or var == 74) then
 				if(isKeyDown) then
 					player["velY"] = playerSpeed
 				else
@@ -55,19 +55,19 @@ function keyHandler(code, isKeyDown)
 				loadLevel(currentLevel)
 			end
 		elseif(gamemode==gamemodes[2]) then			
-			if(var == 3) then
+			if(var == 3 or var == 72) then
 				if(worldPos["x"] < worldWidth) then
 					worldPos["x"] = worldPos["x"] + 1
 			end
-			elseif(var == 0) then
+			elseif(var == 0 or var == 71) then
 				if(worldPos["x"] > 1) then
 					worldPos["x"] = worldPos["x"] - 1
 				end
-			elseif(var == 22) then	
+			elseif(var == 22 or var == 73) then	
 				if(worldPos["y"] > 1) then
 					worldPos["y"] = worldPos["y"] - 1
 				end
-			elseif(var == 18) then
+			elseif(var == 18 or var == 74) then
 				if(worldPos["y"] < worldHeight) then
 					worldPos["y"] = worldPos["y"] + 1
 				end

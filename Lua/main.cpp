@@ -182,12 +182,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		error = lua_pcall(L, 2, 0, 0);
 		if (error) {
 			std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
-
+		}
 		//////////////////////////////////////////////// KeyHandler //////////////////////////////////////////////////
 		Event event;
 		while (window.pollEvent(event))
 		{
-			lua_getglobal(L,"gamemode");
+			lua_getglobal(L, "gamemode");
 			string gameMode = lua_tostring(L, -1);
 			bool keyDown = true;
 			switch (event.type)
@@ -197,8 +197,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				break;
 			case sf::Event::KeyReleased:
 				keyDown = false;
-				
-				if (event.key.code == Keyboard::Tab || gameMode=="editor")
+
+				if (event.key.code == Keyboard::Tab || gameMode == "editor")
 				{
 					lua_getglobal(L, "keyHandler");
 					lua_pushinteger(L, event.key.code);
@@ -215,14 +215,14 @@ int _tmain(int argc, _TCHAR* argv[])
 						lua_pop(L, 1);
 					}
 				}
-			
+
 			case sf::Event::KeyPressed:
 				//Send event.key.code to lua for processing
 				if (event.key.code == Keyboard::Escape)
 				{
 					window.close();
 				}
-				else if (event.key.code != Keyboard::Tab && gameMode == "game" )
+				else if (event.key.code != Keyboard::Tab && gameMode == "game")
 				{
 					lua_getglobal(L, "keyHandler");
 					lua_pushinteger(L, event.key.code);
