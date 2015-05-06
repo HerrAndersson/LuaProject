@@ -203,15 +203,10 @@ int _tmain(int argc, _TCHAR* argv[])
 					lua_getglobal(L, "keyHandler");
 					lua_pushinteger(L, event.key.code);
 					lua_pushboolean(L, keyDown);
-					error = lua_pcall(L, 2, 1, 0);
+					error = lua_pcall(L, 2, 0, 0);
 					if (error)
 					{
 						cerr << "unable to run:" << lua_tostring(L, -1) << endl;
-						lua_pop(L, 1);
-					}
-					else
-					{
-						cout << lua_tonumber(L, -1) << endl;
 						lua_pop(L, 1);
 					}
 				}
@@ -227,15 +222,10 @@ int _tmain(int argc, _TCHAR* argv[])
 					lua_getglobal(L, "keyHandler");
 					lua_pushinteger(L, event.key.code);
 					lua_pushboolean(L, keyDown);
-					error = lua_pcall(L, 2, 1, 0);
+					error = lua_pcall(L, 2, 0, 0);
 					if (error)
 					{
 						std::cerr << "unable to run:" << lua_tostring(L, -1) << endl;
-						lua_pop(L, 1);
-					}
-					if (!error)
-					{
-						cout << lua_tonumber(L, -1) << endl;
 						lua_pop(L, 1);
 					}
 				}

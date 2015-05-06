@@ -96,7 +96,6 @@ function keyHandler(code, isKeyDown)
 			end
 		end 
 	end
-	return var
 end
 
 function collisionTesting(x, y, type)
