@@ -8,8 +8,8 @@ lockRender = false;
 lockKeys = false;
 currentLevel = 1;
 worldPos={}
-worldPos["x"] = 0
-worldPos["y"] = 0
+worldPos["x"] = 1
+worldPos["y"] = 1
 dimensions = 40
 worldWidth = 30
 worldHeight = 20
@@ -60,11 +60,11 @@ function keyHandler(code, isKeyDown)
 					worldPos["x"] = worldPos["x"] + 1
 			end
 			elseif(var == 0) then
-				if(worldPos["x"] >0) then
+				if(worldPos["x"] > 1) then
 					worldPos["x"] = worldPos["x"] - 1
 				end
 			elseif(var == 22) then	
-				if(worldPos["y"] >0) then
+				if(worldPos["y"] > 1) then
 					worldPos["y"] = worldPos["y"] - 1
 				end
 			elseif(var == 18) then
@@ -72,7 +72,7 @@ function keyHandler(code, isKeyDown)
 					worldPos["y"] = worldPos["y"] + 1
 				end
 			elseif(var >26 and var < 31) then
-				world[worldPos["x"]][worldPos["y"]]= var -26
+				world[worldPos["y"]][worldPos["x"]]= var -26
 			elseif(var == 60) then	
 				gamemode = gamemodes[1]
 			end
@@ -156,7 +156,7 @@ function render()
 		if(gamemode == gamemodes[1]) then
 			drawPlayerC()
 		elseif(gamemode == gamemodes[2]) then
-			drawSquareC(worldPos["y"] * dimensions +15, worldPos["x"] * dimensions +15, 10,0);
+			drawSquareC(((worldPos["x"] - 1) * dimensions) + 15, ((worldPos["y"] - 1) * dimensions) + 15, 10, 0);
 		end			
 		displayWindowC();
 	end
