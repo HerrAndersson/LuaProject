@@ -75,6 +75,7 @@ function keyHandler(code, isKeyDown)
 				world[worldPos["y"]][worldPos["x"]]= var -26
 			elseif(var == 60) then	
 				gamemode = gamemodes[1]
+				saveLevel(levelnum)
 			end
 		end 
 	end
@@ -190,10 +191,60 @@ function loadLevel(int)
 		if (b == 1) then break end
 	end
 	
+	levelnum = int;
 	lockRender = false;
 end
 
 function init(playerRadius)
 	player["radius"] = playerRadius
 	loadLevel(1)
+end
+
+function saveLevel(lnum)
+	file = io.open(lnum, "w")
+	file:write([[world = {}]])
+	file:close()
+	file = io.open(lnum, "a")
+	for i = 1, worldHeight, 1 do
+		file:write("\n" .. "world[" .. i .. "]" .. " = " .. table.tostring(world[i]))
+	end
+
+
+	file:close()
+end
+
+function table.val_to_str ( v )
+  if "string" == type( v ) then
+    v = string.gsub( v, "\n", "\\n" )
+    if string.match( string.gsub(v,"[^'\"]",""), '^"+$' ) then
+      return "'" .. v .. "'"
+    end
+    return '"' .. string.gsub(v,'"', '\\"' ) .. '"'
+  else
+    return "table" == type( v ) and table.tostring( v ) or
+      tostring( v )
+  end
+end
+
+function table.key_to_str ( k )
+  if "string" == type( k ) and string.match( k, "^[_%a][_%a%d]*$" ) then
+    return k
+  else
+    return "[" .. table.val_to_str( k ) .. "]"
+  end
+end
+
+function table.tostring( tbl )
+  local result, done = {}, {}
+  for k, v in ipairs( tbl ) do
+    table.insert( result, table.val_to_str( v ) )
+    done[ k ] = true
+  end
+  for k, v in pairs( tbl ) do
+    if not done[ k ] then
+      table.insert( result,
+        table.key_to_str( k ) .. "=" .. table.val_to_str( v ) )
+    end
+  end
+  return "{" .. table.concat( result, "," ) .. "}"
 end
