@@ -1,5 +1,9 @@
 screenWidth = 1200;
 screenHeight = 800;
+player = {}
+player["velX"] = 0
+player["velY"] = 0
+playerSpeed = 3
 
 dimensions = 40
 worldWidth = 30
@@ -31,17 +35,33 @@ world[18] = {1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 2
 world[19] = {2, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2}
 world[20] = {1, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 4}
 
-function keyHandler(code)
+function keyHandler(code, isKeyDown)
 	local var = code
 
 	if(var == 3) then
-		move(5, 0)
+		if(isKeyDown) then
+			player["velX"] = playerSpeed
+		else
+			player["velX"] = 0
+		end
 	elseif(var == 0) then
-		move(-5, 0) 
+		if(isKeyDown) then
+			player["velX"] = -playerSpeed
+		else
+			player["velX"] = 0
+		end
 	elseif(var == 22) then
-		move(0, -5)
+		if(isKeyDown) then
+			player["velY"] = -playerSpeed
+		else
+			player["velY"] = 0
+		end
 	elseif(var == 18) then
-		move(0, 5)
+		if(isKeyDown) then
+			player["velY"] = playerSpeed
+		else
+			player["velY"] = 0
+		end
 	elseif(var == 11) then
 		local int = "1"
 		loadLevel(int)
@@ -52,16 +72,53 @@ function keyHandler(code)
 			gamemode = gamemodes[1]
 		else
 		end
-	else 
-		move(0,0)
 	end
 
 	return var
 end
 
+function collisionTesting(x, y, type)
+	local centerCoordX = math.floor((player["x"] + x + player["radius"]) / dimensions) + 1
+	local centerCoordY = math.floor((player["y"] + y + player["radius"]) / dimensions) + 1
+	if(world[centerCoordY][centerCoordX] == 4) then
+		-- call "you is winner" function
+	end
+	
+	local leftCoordX = math.floor((player["x"] + x) / dimensions) + 1
+	local rightCoordX = math.floor(((player["x"] + x) + player["radius"] * 2) / dimensions) + 1
+	local topCoordY = math.floor((player["y"] + y) / dimensions) + 1
+	local bottomCoordY = math.floor(((player["y"] + y) + player["radius"] * 2) / dimensions) + 1
+	
+	if(x ~= 0) then
+		if(leftCoordX < 1 or rightCoordX > worldWidth ) then
+			x = 0
+		elseif(world[bottomCoordY][rightCoordX] == type or world[topCoordY][rightCoordX] == type or world[bottomCoordY][leftCoordX] == type or world[topCoordY][leftCoordX] == type) then
+			x = 0
+		end
+	end
+	
+	if(y ~= 0) then
+		if(topCoordY < 1 or bottomCoordY > worldHeight) then
+			y = 0
+		elseif(world[bottomCoordY][leftCoordX] == type or world[bottomCoordY][rightCoordX] == type or world[topCoordY][leftCoordX] == type or world[topCoordY][rightCoordX] == type) then
+			y = 0
+		end
+	end
+	return x, y
+end
+
 function move(x, y)
+	x,y = collisionTesting(x, y, 1)
 	moveC(x, y)
 	return 1
+end
+
+function update(playerPosX, playerPosY, playerRadius)
+	player["x"] = playerPosX
+	player["y"] = playerPosY
+	player["radius"] = playerRadius
+	
+	move(player["velX"], player["velY"])
 end
 
 function render()
@@ -75,7 +132,7 @@ function render()
 			drawSquareC((j-1) * dimensions, (i-1) * dimensions, dimensions, world[i][j]);
 		end
 	end
-	
+
 	if(gamemode == gamemodes[1]) then
 		drawPlayerC()
 	end
