@@ -121,7 +121,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	lua_State* L = luaL_newstate();
 	luaL_openlibs(L);
 
-	int error = luaL_loadfile(L, "script.lua") || lua_pcall(L, 0, 0, 0);
+	int error = luaL_loadfile(L, "game.lua") || lua_pcall(L, 0, 0, 0);
 	if (error)
 	{
 		cerr << "unable to run:" << lua_tostring(L, -1) << endl;

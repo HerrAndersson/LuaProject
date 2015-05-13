@@ -111,7 +111,7 @@ function collisionTesting(x, y, type)
 	local bottomCoordY = math.floor(((player["y"] + y) + player["radius"] * 2) / dimensions) + 1
 	
 	if(x ~= 0) then
-		if(leftCoordX < 1 or rightCoordX > worldWidth ) then
+		if(topCoordY < 1 or bottomCoordY > worldHeight or leftCoordX < 1 or rightCoordX > worldWidth ) then
 			x = 0
 		elseif(world[bottomCoordY][rightCoordX] == type or world[topCoordY][rightCoordX] == type or world[bottomCoordY][leftCoordX] == type or world[topCoordY][leftCoordX] == type) then
 			x = 0
